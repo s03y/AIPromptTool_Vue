@@ -60,8 +60,7 @@
 </template>
 
 <script setup>
-import Accordion from '@/components/Accordion.vue';
-import PeoplePromptList from '@/components/PeoplePromptList.vue'; // Alternativ falls du es so nennst
+import Accordion from '../components/Accordion.vue';
 import { ref } from 'vue';
 
 const finalPrompt = ref('');

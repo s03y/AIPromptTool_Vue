@@ -1,121 +1,127 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
     <h1 class="text-3xl font-bold mb-6">People Prompt Generator</h1>
-    <div class="max-w-7xl mx-auto space-y-8">
-
+    <div class="max-w-7xl mx-auto space-y-8 flex flex-col lg:flex-row gap-6">
+      <!-- Kategorien Container 75% Breite -->
       <div
-        v-for="(subcategories, category) in categories"
-        :key="category"
-        class="bg-white p-6 rounded-lg shadow-md"
+        class="bg-white p-6 rounded-lg shadow-md w-full lg:w-3/4"
       >
-        <h2 class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
-          {{ category }}
-        </h2>
+        <div
+          v-for="(subcategories, category) in categories"
+          :key="category"
+          class="mb-8"
+        >
+          <h2 class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
+            {{ category }}
+          </h2>
 
-        <div class="grid grid-cols-2 gap-6">
-          <div
-            v-for="(config, subcategory) in subcategories"
-            :key="subcategory"
-            class="space-y-2"
-            :ref="(el) => registerWrapper(el, category, subcategory)"
-          >
-            <div class="font-medium text-gray-700">{{ subcategory }}</div>
+          <div class="grid grid-cols-2 gap-6">
+            <div
+              v-for="(config, subcategory) in subcategories"
+              :key="subcategory"
+              class="space-y-2"
+              :ref="(el) => registerWrapper(el, category, subcategory)"
+            >
+              <div class="font-medium text-gray-700">{{ subcategory }}</div>
 
-            <div class="relative">
-              <!-- Hauptfeld Input + Dropdown + + Button -->
-              <input
-                v-model="config.input"
-                @focus="config.showDropdown = true"
-                type="text"
-                placeholder="Type or select value"
-                class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
-                @mousedown.prevent
-                @click="addToOptions(category, subcategory)"
-                aria-label="Add option"
-              >
-                +
-              </button>
-
-              <ul
-                v-show="config.showDropdown && config.options.length > 0"
-                class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
-              >
-                <li
-                  v-for="option in config.options"
-                  :key="option"
-                  class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
+              <div class="relative">
+                <!-- Hauptfeld Input + Dropdown + + Button -->
+                <input
+                  v-model="config.input"
+                  @focus="config.showDropdown = true"
+                  type="text"
+                  placeholder="Type or select value"
+                  class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
+                  @mousedown.prevent
+                  @click="addToOptions(category, subcategory)"
+                  aria-label="Add option"
                 >
-                  <span
-                    @mousedown.prevent
-                    @click="selectOption(category, subcategory, option)"
-                  >
-                    {{ option }}
-                  </span>
-                  <button
-                    class="text-gray-400 text-sm hover:text-red-600"
-                    @mousedown.prevent
-                    @click="removeOption(category, subcategory, option)"
-                    aria-label="Remove option"
-                  >
-                    ✕
-                  </button>
-                </li>
-              </ul>
-            </div>
+                  +
+                </button>
 
-            <!-- Color Feld mit Dropdown + + Button -->
-            <div v-if="'color' in config" class="relative mt-2">
-              <input
-                v-model="config.color"
-                @focus="config.showDropdownColor = true"
-                type="text"
-                placeholder="color"
-                class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
-                @mousedown.prevent
-                @click="addToColorOptions(category, subcategory)"
-                aria-label="Add color option"
-              >
-                +
-              </button>
-
-              <ul
-                v-show="config.showDropdownColor && config.colorOptions.length > 0"
-                class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
-              >
-                <li
-                  v-for="option in config.colorOptions"
-                  :key="option"
-                  class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
+                <ul
+                  v-show="config.showDropdown && config.options.length > 0"
+                  class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
                 >
-                  <span
-                    @mousedown.prevent
-                    @click="selectColorOption(category, subcategory, option)"
+                  <li
+                    v-for="option in config.options"
+                    :key="option"
+                    class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
                   >
-                    {{ option }}
-                  </span>
-                  <button
-                    class="text-gray-400 text-sm hover:text-red-600"
-                    @mousedown.prevent
-                    @click="removeColorOption(category, subcategory, option)"
-                    aria-label="Remove color option"
+                    <span
+                      @mousedown.prevent
+                      @click="selectOption(category, subcategory, option)"
+                    >
+                      {{ option }}
+                    </span>
+                    <button
+                      class="text-gray-400 text-sm hover:text-red-600"
+                      @mousedown.prevent
+                      @click="removeOption(category, subcategory, option)"
+                      aria-label="Remove option"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Color Feld mit Dropdown + + Button -->
+              <div v-if="'color' in config" class="relative mt-2">
+                <input
+                  v-model="config.color"
+                  @focus="config.showDropdownColor = true"
+                  type="text"
+                  placeholder="color"
+                  class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
+                  @mousedown.prevent
+                  @click="addToColorOptions(category, subcategory)"
+                  aria-label="Add color option"
+                >
+                  +
+                </button>
+
+                <ul
+                  v-show="config.showDropdownColor && config.colorOptions.length > 0"
+                  class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
+                >
+                  <li
+                    v-for="option in config.colorOptions"
+                    :key="option"
+                    class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
                   >
-                    ✕
-                  </button>
-                </li>
-              </ul>
+                    <span
+                      @mousedown.prevent
+                      @click="selectColorOption(category, subcategory, option)"
+                    >
+                      {{ option }}
+                    </span>
+                    <button
+                      class="text-gray-400 text-sm hover:text-red-600"
+                      @mousedown.prevent
+                      @click="removeColorOption(category, subcategory, option)"
+                      aria-label="Remove color option"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Final Prompt -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
+      <!-- Final Prompt Container rechts 25% Breite -->
+      <div
+        class="bg-white p-6 rounded-lg shadow-md w-full lg:w-1/4 h-fit sticky top-6"
+      >
         <h2 class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
           Final Prompt
         </h2>

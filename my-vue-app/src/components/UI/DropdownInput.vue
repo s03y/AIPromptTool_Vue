@@ -1,12 +1,11 @@
 <template>
-  <div class="w-full">
+  <div class="w-full" ref="dropdownRef">
     <label class="block font-medium mb-1">{{ label }}:</label>
     <div class="relative flex items-center">
       <input
         v-model="inputValue"
         @focus="showDropdown = true"
         @input="filterOptions"
-        @blur="() => setTimeout(() => showDropdown = false, 150)"
         :placeholder="label"
         class="w-full border rounded px-3 py-2"
       />
@@ -18,9 +17,10 @@
         +
       </button>
 
+      <!-- Dropdown unterhalb -->
       <ul
         v-show="showDropdown && filteredOptions.length"
-        class="absolute z-10 bg-white border mt-1 rounded shadow w-full max-h-40 overflow-y-auto"
+        class="absolute left-0 top-full mt-1 z-10 bg-white border rounded shadow w-full max-h-40 overflow-y-auto"
       >
         <li
           v-for="option in filteredOptions"
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
   modelValue: String,
@@ -50,6 +50,7 @@ const inputValue = ref(props.modelValue || '');
 const showDropdown = ref(false);
 const internalOptions = ref([...props.options]);
 const filteredOptions = ref([...props.options]);
+const dropdownRef = ref(null);
 
 watch(() => props.modelValue, val => {
   inputValue.value = val || '';
@@ -77,5 +78,18 @@ function addOption() {
   emit('update:modelValue', newOption);
   showDropdown.value = false;
 }
-</script>
 
+function handleClickOutside(event) {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    showDropdown.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+</script>

@@ -48,12 +48,6 @@
     <PromptOutput :prompt="prompt" />
   </div>
 
-  <SmartDropdownInput
-  label="Hair Type"
-  v-model="prompt.hair.type"
-  :options="['long', 'short', 'buzzcut']"
-/>
-
 </template>
 
 <script setup>

@@ -1,133 +1,149 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
     <h1 class="text-3xl font-bold mb-6">People Prompt Generator</h1>
-    <div class="max-w-7xl mx-auto space-y-8 flex flex-col lg:flex-row gap-6">
-      <!-- Kategorien Container 75% Breite -->
-      <div
-        class="bg-white p-6 rounded-lg shadow-md w-full lg:w-3/4"
-      >
+
+    <div class="max-w-7xl mx-auto flex gap-6 items-start">
+      
+      <!-- Kategorien Container (75%) -->
+      <div class="w-3/4 space-y-4">
         <div
           v-for="(subcategories, category) in categories"
           :key="category"
-          class="mb-8"
+          class="bg-white rounded-lg shadow-md"
         >
-          <h2 class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
-            {{ category }}
-          </h2>
+          <!-- Header mit Klick zum Ein-/Ausklappen -->
+          <button
+            @click="toggleCategory(category)"
+            class="w-full flex justify-between items-center px-6 py-4 text-left text-xl font-semibold border-b border-gray-300 focus:outline-none"
+          >
+            <span>{{ category }}</span>
+            <span>
+              <svg
+                :class="{'transform rotate-180': isCategoryOpen(category)}"
+                class="w-5 h-5 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </span>
+          </button>
 
-          <div class="grid grid-cols-2 gap-6">
-            <div
-              v-for="(config, subcategory) in subcategories"
-              :key="subcategory"
-              class="space-y-2"
-              :ref="(el) => registerWrapper(el, category, subcategory)"
-            >
-              <div class="font-medium text-gray-700">{{ subcategory }}</div>
+          <!-- Kategorie Inhalt, nur sichtbar wenn aufgeklappt -->
+          <div v-show="isCategoryOpen(category)" class="p-6 space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+              <div
+                v-for="(config, subcategory) in subcategories"
+                :key="subcategory"
+                class="space-y-2"
+                :ref="(el) => registerWrapper(el, category, subcategory)"
+              >
+                <div class="font-medium text-gray-700">{{ subcategory }}</div>
 
-              <div class="relative">
-                <!-- Hauptfeld Input + Dropdown + + Button -->
-                <input
-                  v-model="config.input"
-                  @focus="config.showDropdown = true"
-                  type="text"
-                  placeholder="Type or select value"
-                  class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
-                  @mousedown.prevent
-                  @click="addToOptions(category, subcategory)"
-                  aria-label="Add option"
-                >
-                  +
-                </button>
-
-                <ul
-                  v-show="config.showDropdown && config.options.length > 0"
-                  class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
-                >
-                  <li
-                    v-for="option in config.options"
-                    :key="option"
-                    class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
+                <div class="relative">
+                  <input
+                    v-model="config.input"
+                    @focus="config.showDropdown = true"
+                    type="text"
+                    placeholder="Type or select value"
+                    class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
+                    @mousedown.prevent
+                    @click="addToOptions(category, subcategory)"
+                    aria-label="Add option"
                   >
-                    <span
-                      @mousedown.prevent
-                      @click="selectOption(category, subcategory, option)"
-                    >
-                      {{ option }}
-                    </span>
-                    <button
-                      class="text-gray-400 text-sm hover:text-red-600"
-                      @mousedown.prevent
-                      @click="removeOption(category, subcategory, option)"
-                      aria-label="Remove option"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                </ul>
-              </div>
+                    +
+                  </button>
 
-              <!-- Color Feld mit Dropdown + + Button -->
-              <div v-if="'color' in config" class="relative mt-2">
-                <input
-                  v-model="config.color"
-                  @focus="config.showDropdownColor = true"
-                  type="text"
-                  placeholder="color"
-                  class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
-                  @mousedown.prevent
-                  @click="addToColorOptions(category, subcategory)"
-                  aria-label="Add color option"
-                >
-                  +
-                </button>
-
-                <ul
-                  v-show="config.showDropdownColor && config.colorOptions.length > 0"
-                  class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
-                >
-                  <li
-                    v-for="option in config.colorOptions"
-                    :key="option"
-                    class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
+                  <ul
+                    v-show="config.showDropdown && config.options.length > 0"
+                    class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
                   >
-                    <span
-                      @mousedown.prevent
-                      @click="selectColorOption(category, subcategory, option)"
+                    <li
+                      v-for="option in config.options"
+                      :key="option"
+                      class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
                     >
-                      {{ option }}
-                    </span>
-                    <button
-                      class="text-gray-400 text-sm hover:text-red-600"
-                      @mousedown.prevent
-                      @click="removeColorOption(category, subcategory, option)"
-                      aria-label="Remove color option"
+                      <span
+                        @mousedown.prevent
+                        @click="selectOption(category, subcategory, option)"
+                      >
+                        {{ option }}
+                      </span>
+                      <button
+                        class="text-gray-400 text-sm hover:text-red-600"
+                        @mousedown.prevent
+                        @click="removeOption(category, subcategory, option)"
+                        aria-label="Remove option"
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div v-if="'color' in config" class="relative mt-2">
+                  <input
+                    v-model="config.color"
+                    @focus="config.showDropdownColor = true"
+                    type="text"
+                    placeholder="color"
+                    class="w-full p-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-blue-600 text-xl font-bold focus:outline-none"
+                    @mousedown.prevent
+                    @click="addToColorOptions(category, subcategory)"
+                    aria-label="Add color option"
+                  >
+                    +
+                  </button>
+
+                  <ul
+                    v-show="config.showDropdownColor && config.colorOptions.length > 0"
+                    class="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-auto shadow-lg"
+                  >
+                    <li
+                      v-for="option in config.colorOptions"
+                      :key="option"
+                      class="flex justify-between items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
                     >
-                      ✕
-                    </button>
-                  </li>
-                </ul>
+                      <span
+                        @mousedown.prevent
+                        @click="selectColorOption(category, subcategory, option)"
+                      >
+                        {{ option }}
+                      </span>
+                      <button
+                        class="text-gray-400 text-sm hover:text-red-600"
+                        @mousedown.prevent
+                        @click="removeColorOption(category, subcategory, option)"
+                        aria-label="Remove color option"
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Final Prompt Container rechts 25% Breite -->
-      <div
-        class="bg-white p-6 rounded-lg shadow-md w-full lg:w-1/4 h-fit sticky top-6"
-      >
+      <!-- Prompt Container (25%) -->
+      <div class="bg-white p-6 rounded-lg shadow-md w-1/4">
         <h2 class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
           Final Prompt
         </h2>
         <textarea
           readonly
-          class="w-full h-36 p-4 border border-gray-300 rounded-md resize-none focus:outline-none"
+          class="w-full h-60 p-4 border border-gray-300 rounded-md resize-none focus:outline-none"
           :value="finalPrompt"
         ></textarea>
       </div>
@@ -136,7 +152,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, onMounted, onBeforeUnmount } from 'vue';
+import { reactive, computed, onMounted, onBeforeUnmount, ref } from 'vue';
 
 const categories = reactive({
   'Facial Features': {
@@ -231,6 +247,23 @@ const categories = reactive({
   },
 });
 
+// Zustände für ausgeklappte Kategorien
+const openCategories = ref(Object.keys(categories).reduce((acc, key) => {
+  acc[key] = true; // standardmäßig alle offen (kann auf false gesetzt werden)
+  return acc;
+}, {}));
+
+function toggleCategory(category) {
+  openCategories.value[category] = !openCategories.value[category];
+}
+
+function isCategoryOpen(category) {
+  return openCategories.value[category];
+}
+
+// Die übrigen Methoden unverändert übernehmen, z.B. addToOptions, selectOption etc.
+// ... (copy-paste deiner existierenden Methoden hier)
+
 function addToOptions(category, subcategory) {
   const conf = categories[category][subcategory];
   const val = conf.input.trim();
@@ -275,33 +308,48 @@ function registerWrapper(el, category, subcategory) {
 }
 
 function handleClickOutside(event) {
-  for (const category in wrapperRefs) {
-    for (const subcategory in wrapperRefs[category]) {
-      const el = wrapperRefs[category][subcategory];
-      if (!el.contains(event.target)) {
-        categories[category][subcategory].showDropdown = false;
-        categories[category][subcategory].showDropdownColor = false;
+  for (const category in categories) {
+    for (const subcategory in categories[category]) {
+      const conf = categories[category][subcategory];
+      if (
+        conf.showDropdown &&
+        wrapperRefs[category][subcategory] &&
+        !wrapperRefs[category][subcategory].contains(event.target)
+      ) {
+        conf.showDropdown = false;
+      }
+      if (
+        conf.showDropdownColor &&
+        wrapperRefs[category][subcategory] &&
+        !wrapperRefs[category][subcategory].contains(event.target)
+      ) {
+        conf.showDropdownColor = false;
       }
     }
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  window.addEventListener('click', handleClickOutside);
 });
-
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside);
+  window.removeEventListener('click', handleClickOutside);
 });
 
 const finalPrompt = computed(() => {
-  const parts = [];
-  Object.values(categories).forEach((subcategories) => {
-    Object.values(subcategories).forEach((config) => {
-      if (config.input?.trim()) parts.push(config.input.trim());
-      if (config.color?.trim()) parts.push(config.color.trim());
-    });
-  });
-  return parts.join(', ');
+  let result = '';
+  for (const category in categories) {
+    for (const subcategory in categories[category]) {
+      const conf = categories[category][subcategory];
+      if (conf.input) {
+        if ('color' in conf && conf.color) {
+          result += `${conf.input} ${conf.color}, `;
+        } else {
+          result += `${conf.input}, `;
+        }
+      }
+    }
+  }
+  return result.trim().replace(/,$/, '');
 });
 </script>

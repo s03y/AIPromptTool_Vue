@@ -156,30 +156,89 @@ import { reactive, computed, onMounted, onBeforeUnmount, ref } from 'vue';
 
 const categories = reactive({
   'Facial Features': {
+    Gender: {
+      input: '',
+      options: ['female', 'male', 'girl', 'boy'],
+      showDropdown: false,
+    },
+    Age: {
+      input: '',
+      options: ['20 years old', '30 years old'],
+      showDropdown: false,
+    },
+    Ethnicity: {
+      input: '',
+      options: ['Caucasian', 'Hispanic', 'Asian' , 'African'],
+      showDropdown: false,
+    },
+    FaceShape: {
+      input: '',
+      options: ['oval', 'square', 'diamond', 'round','long', 'heart'],
+      showDropdown: false,
+    },
     Hair: {
       input: '',
       color: '',
-      options: ['short hair', 'long hair', 'curly hair', 'bald'],
-      colorOptions: ['blonde', 'brown', 'black', 'red'],
+      options: ['short', 'long', 'curly', 'bald'],
+      colorOptions: ['blonde', 'brown', 'black', 'red', 'blue'],
       showDropdown: false,
       showDropdownColor: false,
     },
     Eyes: {
       input: '',
       color: '',
-      options: ['blue eyes', 'green eyes', 'brown eyes'],
+      options: ['big', 'small', 'hooded', 'monolid', 'almond', 'round'],
       colorOptions: ['blue', 'green', 'hazel'],
+      showDropdown: false,
+      showDropdownColor: false,
+    },
+    Eyelashes: {
+      input: '',
+      color: '',
+      options: ['natural', 'false cat-eye', 'false doll-eye'],
+      colorOptions: ['black', 'brown', 'blonde', 'same as hair color'],
+      showDropdown: false,
+      showDropdownColor: false,
+    },
+    Eyebrows: {
+      input: '',
+      color: '',
+      options: ['rounded', 'small arch', 'medium arch', 'soft angled', 'hard angled', 'straight'],
+      colorOptions: ['black', 'brown', 'blue', 'same as hair color'],
       showDropdown: false,
       showDropdownColor: false,
     },
     Nose: {
       input: '',
-      options: ['small nose', 'big nose'],
+      options: ['small nose', 'big nose', 'button nose'],
       showDropdown: false,
+    },
+    Lips: {
+        input: '',
+        options: ['full lips', 'thin lips', 'round lips', 'pouty lips'],
+        showDropdown: false,
+    },
+    Beard: {
+      input: '',
+      color: '',
+      options: ['balbo', 'short boxed', 'stubble', 'circle', 'mutton chops', 'anchor', 'goatee', 'full'],
+      colorOptions: ['black', 'brown', 'blonde', 'same as hair color'],
+      showDropdown: false,
+      showDropdownColor: false,
     },
     Mouth: {
       input: '',
       options: ['smiling', 'open mouth'],
+      showDropdown: false,
+    },
+    SkinTexture: {
+      input: '',
+      options: ['visible pores', 'smooth'],
+      showDropdown: false,
+    },
+    Piercings: {
+      input: '',
+      options: ['nostril', 'eyebrows', 'septum', 'medusa', 'snake bites'],
       showDropdown: false,
     },
   },
